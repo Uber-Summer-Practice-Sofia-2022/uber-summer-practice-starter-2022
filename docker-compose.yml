@@ -1,28 +1,5 @@
 version: '3.7'
 services:
-  server:
-    container_name: python_devserver
-    image: flask_app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./src:/app
-    ports:
-      - target: 8080
-        published: 8080
-        protocol: tcp
-    environment:
-      - FLASK_APP=server.py
-      - FLASK_ENV=development
-      - FLASK_PORT=8080
-    links:
-      # network connection with these services
-      - mysql
-    depends_on:
-      # build those images first
-      - mysql
-
   mysql:
     container_name: flask_mysql
     image: mysql:5.7
@@ -39,6 +16,22 @@ services:
       MYSQL_DATABASE: db
       MYSQL_USER: admin
       MYSQL_PASSWORD: mysql
+
+  # Mysql Admin
+  myadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: flask-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_ROOT_PASSWORD=""
+      - PMA_PORT=3306
+    restart: always
+    depends_on:
+      - mysql
+    links:
+      - mysql
 
 # volumes definition here
 volumes:
