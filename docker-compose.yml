@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   mysql:
-    container_name: flask_mysql
+    container_name: flask_app_mysql
     image: mysql:5.7
     volumes:
         # pass volume named mysql-data to mysql container
@@ -20,9 +20,9 @@ services:
   # Mysql Admin
   myadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: flask-phpmyadmin
+    container_name: flask_app_phpmyadmin
     ports:
-      - "8081:80"
+      - "8082:80"
     environment:
       - PMA_HOST=mysql
       - MYSQL_ROOT_PASSWORD=""
@@ -32,6 +32,17 @@ services:
       - mysql
     links:
       - mysql
+
+  mountebank:
+    image: bbyars/mountebank:latest
+    container_name: mountebank
+    ports:
+      - 2525:2525
+      - 8090:8090
+    volumes:
+      - ./imposters:/imposters
+    command: mb --configfile /imposters/imposters.ejs --allowInjection
+
 
 # volumes definition here
 volumes:
