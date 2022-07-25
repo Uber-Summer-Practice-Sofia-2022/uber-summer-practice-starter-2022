@@ -2,6 +2,9 @@ import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from dataclasses import dataclass
+import requests
+from mounty import Mountebank
+
 
 server = Flask(__name__)
 
@@ -16,6 +19,7 @@ server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 print(server.config['SQLALCHEMY_DATABASE_URI'])
 db = SQLAlchemy(server)
 
+mountebank = Mountebank(url="http://localhost:2525")
 
 @dataclass
 class Log(db.Model):
@@ -67,6 +71,12 @@ def get_all_logs():
     return jsonify(logs)
 
 
+@server.route('/orders', methods=['GET'])
+def get_all_orders():
+    response_from_other_service = requests.get(url="http://localhost:8090/test", params="greet=morning", verify=False, timeout=3)
+    orders = response_from_other_service.json()
+    return jsonify(orders)
+
+
 if __name__ == "__main__":
-    server_port = os.environ['FLASK_PORT']
-    server.run(host='0.0.0.0', port=server_port, debug=True)
+    server.run(host='0.0.0.0', port=5000, debug=True)

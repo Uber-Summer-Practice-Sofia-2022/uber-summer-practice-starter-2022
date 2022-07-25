@@ -1,0 +1,62 @@
+{
+  "imposters": [
+    {
+      "protocol": "http",
+      "port": 8090,
+      "stubs": [
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/test",
+                "query": {
+                  "greet": "morning"
+                }
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "message": "Good Morning"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/test",
+                "query": {
+                  "greet": "evening"
+                }
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "message": "Good Evening"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
